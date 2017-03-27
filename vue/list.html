@@ -6,6 +6,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui"/>
 	<meta name="hotcss" content="initial-dpr=1">
 	<script src="https://r.mzmoney.com/topic/lead3/hotcss.js"></script>
+	<script src="http://s01.lulutrip.com/scripts/app/pkg/app.lib.js"></script>
+	<script src="https://keepfool.github.io/vue-tutorials/01.GettingStarted/js/vue.js"></script>
 	<style>
 		*{ margin: 0; padding: 0; border: 0; box-sizing: border-box; }
 		body { width: 16rem; margin: 0 auto; font-family: '微软雅黑'; }
@@ -32,7 +34,7 @@
 		}
 		.view-main ul li a img {
 		  width: 100%;
-		  height: 5.29067rem;
+		  height: 9.29067rem;
 		}
 		.view-main ul li h3 {
 		  font-size: 0.55467rem;
@@ -49,7 +51,7 @@
 		  height: 1.28rem;
 		  line-height: 1.28rem;
 		  color: #fff;
-		  font-size: 0.68267rem;
+		  font-size: 0.66267rem;
 		  background-color: #de3d96;
 		  text-align: center;
 		  margin: 0 auto;
@@ -65,73 +67,110 @@
 <body>
 <div id="app" class="view-main">
 	<ul>
-		<li v-for="act in acts">
-			<a :href="DOMAIN + '/' +act.link" target="_blank">
-				<img :src="UPLOAD_DOMAIN+'/'+act.af_cover">
-				<h3>{{act.actname}}</h3>
-				<span>GO NOW</span>
+		<li v-for="act in acts" track-by="$index">
+			<a target="_blank">
+				<img :src="act.fileSrc">
+				<span>BUY NOW</span>
 			</a>
 		</li>
 	</ul>
 	<div v-if="isLoading" style="text-align:center;">
-		<img src="http://www.tonghua-china.com/3d/img/loading.gif">
+		<img class="loadimg" src="http://www.tonghua-china.com/3d/img/loading.gif">
 	</div>
-	<div v-if="isMore" style="text-align:center;">
+	<div v-if="isMore" class="nomore" style="text-align:center;">
 		已经加载完了哦……
 	</div>
 </div>
 </body>
-<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-<script src="https://keepfool.github.io/vue-tutorials/01.GettingStarted/js/vue.js"></script>
 <script>
-var firstActs = [],page=1,isScroll=true;
-$.get("http://app.lulutrip.com/activity/entry?api=1&response=json&page="+page,
-    function(t) {
-        for (var e = 0; e < t.data.acts.length; e++) {
-        	firstActs.push(t.data.acts[e]);
-        }
-        page++;
-        app.isLoading=false;
-    },"json");
+var imgData = [
+	{
+		"fileSrc":"images/01.jpg"
+	},
+	{
+		"fileSrc":"images/02.jpg"
+	},
+	{
+		"fileSrc":"images/03.jpg"
+	},
+	{
+		"fileSrc":"images/04.jpg"
+	},
+	{
+		"fileSrc":"images/05.jpg"
+	},
+	{
+		"fileSrc":"images/06.jpg"
+	},
+	{
+		"fileSrc":"images/07.jpg"
+	},
+	{
+		"fileSrc":"images/08.jpg"
+	},
+	{
+		"fileSrc":"images/09.jpg"
+	},
+	{
+		"fileSrc":"images/10.jpg"
+	},
+	{
+		"fileSrc":"images/11.jpg"
+	},
+	{
+		"fileSrc":"images/12.jpg"
+	},
+	{
+		"fileSrc":"images/13.jpg"
+	},
+	{
+		"fileSrc":"images/14.jpg"
+	},
+	{
+		"fileSrc":"images/15.jpg"
+	},
+	{
+		"fileSrc":"images/16.jpg"
+	},
+	{
+		"fileSrc":"images/17.jpg"
+	},
+	{
+		"fileSrc":"images/18.jpg"
+	},
+	{
+		"fileSrc":"images/19.jpg"
+	},
+	{
+		"fileSrc":"images/20.jpg"
+	}
+]
+var page=1,isScroll=true;
 var app = new Vue({
   el: '#app',
   data: {
-    acts:firstActs,
-    UPLOAD_DOMAIN:"http://img1.lulutrip.com",
-    DOMAIN:"http://www.lulutrip.com",
+    acts:[],
     isLoading:true,
     isMore:false
   },
   methods:{
   	ajaxAct: function(){
-  		var _this = this;
-  		$.get("http://app.lulutrip.com/activity/entry?api=1&response=json&page="+page,
-		    function(t) {
-		        for (var e = 0; e < t.data.acts.length; e++) {
-		        	_this.acts.push(t.data.acts[e]);
-		        }
-		        
-		    },"json");
+  		//var _this = this;
+  		this.isLoading=true;
+  		isScroll = true;
+        this.acts = this.acts.concat(imgData);
+        this.isLoading=false;
   		page++;
   	}
   }
 });
+app.ajaxAct();
 $(window).on('scroll', ajaxImg);
 function ajaxImg(){
-	//alert(11);
-	if ($(document).height() == $(window).height() + $(window).scrollTop() && isScroll) {
+	if (isScroll && $(document).height() == $(window).height() + $(window).scrollTop()) {
 		isScroll = false;
 		if(page<=6){
-			app.isLoading=true;
-			$.get("http://app.lulutrip.com/activity/entry?api=1&response=json&page="+page,
-		    function(t) {
-		        for (var e = 0; e < t.data.acts.length; e++) {
-		        	firstActs.push(t.data.acts[e]);
-		        }
-		        page++;
-		        app.isLoading=false;
-		        isScroll = true;
-		    },"json");
+		 		app.ajaxAct();
 		}else{
 			app.isMore=true;
 			$(window).off('scroll', ajaxImg);
